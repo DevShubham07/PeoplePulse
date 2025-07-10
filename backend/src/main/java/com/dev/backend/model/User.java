@@ -1,12 +1,11 @@
 package com.dev.backend.model;
 
-import org.hsqldb.lib.RCData;
-import lombok.AllArgsConstructor;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
     @Id
@@ -24,4 +23,4 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role; // ADMIN, MANAGER, EMPLOYEE
-}
+} 

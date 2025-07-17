@@ -32,6 +32,7 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+         System.out.println("ktk Incoming user: " + user);
         return userRepository.save(user);
     }
 

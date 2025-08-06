@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/attendance")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AttendanceController {
 
     private final AttendanceService service;

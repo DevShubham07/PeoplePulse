@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/performance")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PerformanceController {
 
     private final PerformanceService service;

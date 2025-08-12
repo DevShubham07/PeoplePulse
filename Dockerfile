@@ -2,17 +2,15 @@
 FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
 
-# Copy the entire repository first
-COPY . .
-
-# Change to backend directory and build
-WORKDIR /app/backend
+# Copy pom.xml first (for Docker cache optimization)
+COPY backend/pom.xml .
+COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/backend/target/backend-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
 
 # Add script to debug environment variables
 RUN echo '#!/bin/bash' > /app/start.sh && \

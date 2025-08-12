@@ -5,8 +5,8 @@ services:
     plan: free
     branch: main
     autoDeploy: true
-    buildContext: ./backend
-    dockerfilePath: ./backend/Dockerfile
+    buildContext: .
+    dockerfilePath: Dockerfile   # Use the one at root
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production

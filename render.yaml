@@ -5,6 +5,7 @@ services:
     plan: free
     branch: main
     autoDeploy: true
+    buildContext: .
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production

@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/PeoplePulse/static/css/main.e108c602.css",
+    "main.js": "/PeoplePulse/static/js/main.46d7179e.js",
+    "static/js/453.670e15c7.chunk.js": "/PeoplePulse/static/js/453.670e15c7.chunk.js",
+    "index.html": "/PeoplePulse/index.html",
+    "main.e108c602.css.map": "/PeoplePulse/static/css/main.e108c602.css.map",
+    "main.46d7179e.js.map": "/PeoplePulse/static/js/main.46d7179e.js.map",
+    "453.670e15c7.chunk.js.map": "/PeoplePulse/static/js/453.670e15c7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e108c602.css",
+    "static/js/main.46d7179e.js"
+  ]
+}

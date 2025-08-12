@@ -5,13 +5,27 @@ services:
     plan: free
     branch: main
     autoDeploy: true
-    buildContext: .
+    buildContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production
       - key: FRONTEND_URL
         value: https://devshubham07.github.io
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: peoplepulse-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: peoplepulse-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: peoplepulse-db
+          property: password
 
 databases:
   - name: peoplepulse-db
     databaseName: employee_management
+    plan: free

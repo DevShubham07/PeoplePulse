@@ -13,7 +13,7 @@ RUN mvn clean package -DskipTests
 # Runtime stage
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 # Add script to debug environment variables
 RUN echo '#!/bin/bash' > /app/start.sh && \

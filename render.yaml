@@ -10,8 +10,6 @@ services:
         value: production
       - key: FRONTEND_URL
         value: https://devshubham07.github.io
-    databases:
-      - name: peoplepulse-db
 
 databases:
   - name: peoplepulse-db

@@ -12,7 +12,7 @@ import { AuthProvider } from './contexts/AuthContext';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/PeoplePulse">
         <div className="min-h-screen bg-secondary-50">
           <Routes>
             <Route path="/" element={<Homepage />} />

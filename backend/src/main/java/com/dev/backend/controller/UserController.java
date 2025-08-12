@@ -17,7 +17,7 @@ import com.dev.backend.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://devshubham07.github.io"})
 public class UserController {
 
     private final UserService userService;

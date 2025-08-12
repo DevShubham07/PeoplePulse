@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/onboarding")
+@CrossOrigin(origins = {"http://localhost:3000", "https://devshubham07.github.io"})
 public class OnboardingTaskController {
 
     private final OnboardingTaskService service;

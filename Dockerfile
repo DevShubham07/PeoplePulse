@@ -2,8 +2,11 @@
 FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
 
-# Copy pom.xml first (for Docker cache optimization)
+# Copy all Maven-related files
 COPY backend/pom.xml .
+COPY backend/.mvn ./.mvn
+COPY backend/mvnw .
+COPY backend/mvnw.cmd .
 COPY backend/src ./src
 RUN mvn clean package -DskipTests
 

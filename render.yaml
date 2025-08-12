@@ -1,12 +1,10 @@
 services:
   - type: web
     name: peoplepulse-backend
-    env: docker          # ✅ Docker environment
-    plan: free           # ✅ Free tier
-    branch: main         # ✅ Main branch
-    autoDeploy: true     # ✅ Auto-deploy on push
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/backend-0.0.1-SNAPSHOT.jar
+    env: docker
+    plan: free
+    branch: main
+    autoDeploy: true
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production

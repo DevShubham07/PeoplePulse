@@ -66,6 +66,22 @@ public class DataInitializer implements CommandLineRunner {
         manager1.setRole(Role.MANAGER);
         userRepository.save(manager1);
 
+        // Create more users for realistic data
+        User[] additionalUsers = {
+            createUser("alex.smith", "alex.smith@company.com", Role.EMPLOYEE),
+            createUser("emma.wilson", "emma.wilson@company.com", Role.EMPLOYEE),
+            createUser("david.brown", "david.brown@company.com", Role.EMPLOYEE),
+            createUser("lisa.garcia", "lisa.garcia@company.com", Role.MANAGER),
+            createUser("james.taylor", "james.taylor@company.com", Role.EMPLOYEE),
+            createUser("maria.rodriguez", "maria.rodriguez@company.com", Role.EMPLOYEE),
+            createUser("robert.anderson", "robert.anderson@company.com", Role.EMPLOYEE),
+            createUser("jennifer.thomas", "jennifer.thomas@company.com", Role.EMPLOYEE)
+        };
+        
+        for (User user : additionalUsers) {
+            userRepository.save(user);
+        }
+
         // Create employees
         Employee adminEmployee = new Employee();
         adminEmployee.setName("Admin User");
@@ -101,6 +117,22 @@ public class DataInitializer implements CommandLineRunner {
         michaelEmployee.setUser(manager1);
         michaelEmployee.setManager(adminEmployee);
         employeeRepository.save(michaelEmployee);
+
+        // Create additional employees
+        Employee[] additionalEmployees = {
+            createEmployee("Alex Smith", "Frontend Developer", "Engineering", LocalDate.of(2023, 5, 10), additionalUsers[0], adminEmployee),
+            createEmployee("Emma Wilson", "UX Designer", "Design", LocalDate.of(2023, 2, 20), additionalUsers[1], adminEmployee),
+            createEmployee("David Brown", "Backend Developer", "Engineering", LocalDate.of(2022, 11, 15), additionalUsers[2], adminEmployee),
+            createEmployee("Lisa Garcia", "Marketing Manager", "Marketing", LocalDate.of(2022, 6, 1), additionalUsers[3], adminEmployee),
+            createEmployee("James Taylor", "DevOps Engineer", "IT", LocalDate.of(2023, 1, 8), additionalUsers[4], adminEmployee),
+            createEmployee("Maria Rodriguez", "QA Engineer", "Engineering", LocalDate.of(2023, 4, 12), additionalUsers[5], adminEmployee),
+            createEmployee("Robert Anderson", "Sales Representative", "Sales", LocalDate.of(2022, 9, 5), additionalUsers[6], adminEmployee),
+            createEmployee("Jennifer Thomas", "HR Specialist", "Human Resources", LocalDate.of(2023, 3, 18), additionalUsers[7], adminEmployee)
+        };
+        
+        for (Employee employee : additionalEmployees) {
+            employeeRepository.save(employee);
+        }
 
         // Create attendance records
         Attendance attendance1 = new Attendance();
@@ -156,6 +188,124 @@ public class DataInitializer implements CommandLineRunner {
         task3.setCompleted(false);
         onboardingTaskRepository.save(task3);
 
+        // Create more attendance records for the past week
+        createAttendanceRecords(additionalEmployees);
+        
+        // Create more performance records
+        createPerformanceRecords(additionalEmployees);
+        
+        // Create more onboarding tasks
+        createOnboardingTasks(additionalEmployees);
+
         System.out.println("Sample data initialized successfully!");
+    }
+    
+    private User createUser(String username, String email, Role role) {
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword("password123");
+        user.setRole(role);
+        return user;
+    }
+    
+    private Employee createEmployee(String name, String designation, String department, 
+                                   LocalDate joinDate, User user, Employee manager) {
+        Employee employee = new Employee();
+        employee.setName(name);
+        employee.setDesignation(designation);
+        employee.setDepartment(department);
+        employee.setJoinDate(joinDate);
+        employee.setUser(user);
+        employee.setManager(manager);
+        return employee;
+    }
+    
+    private void createAttendanceRecords(Employee[] employees) {
+        LocalDate today = LocalDate.now();
+        
+        for (Employee employee : employees) {
+            // Create attendance for the past 7 days
+            for (int i = 0; i < 7; i++) {
+                LocalDate date = today.minusDays(i);
+                
+                // Skip weekends for some employees
+                if (date.getDayOfWeek().getValue() > 5 && Math.random() > 0.3) {
+                    continue;
+                }
+                
+                Attendance attendance = new Attendance();
+                attendance.setEmployee(employee);
+                attendance.setDate(date);
+                attendance.setClockIn(LocalDateTime.of(date, java.time.LocalTime.of(9, 0).plusMinutes((int)(Math.random() * 60))));
+                
+                // 80% chance of clocking out
+                if (Math.random() > 0.2) {
+                    attendance.setClockOut(attendance.getClockIn().plusHours(8).plusMinutes((int)(Math.random() * 120)));
+                }
+                
+                attendanceRepository.save(attendance);
+            }
+        }
+    }
+    
+    private void createPerformanceRecords(Employee[] employees) {
+        for (Employee employee : employees) {
+            // Create quarterly performance reviews
+            for (int i = 1; i <= 4; i++) {
+                Performance performance = new Performance();
+                performance.setEmployee(employee);
+                performance.setDate(LocalDate.now().minusMonths(i * 3));
+                performance.setScore(75 + (int)(Math.random() * 25)); // Score between 75-100
+                performance.setFeedback(generateFeedback(performance.getScore()));
+                performance.setReviewer("Michael Chen");
+                performanceRepository.save(performance);
+            }
+        }
+    }
+    
+    private void createOnboardingTasks(Employee[] employees) {
+        String[] taskTitles = {
+            "Complete HR paperwork",
+            "Setup development environment", 
+            "Team introduction meeting",
+            "Security training",
+            "Company policy review",
+            "Equipment setup",
+            "First project assignment"
+        };
+        
+        String[] taskDescriptions = {
+            "Fill out all required HR forms and submit",
+            "Install and configure development tools",
+            "Meet with team members and stakeholders", 
+            "Complete security awareness training",
+            "Review company policies and procedures",
+            "Setup workstation and equipment",
+            "Get assigned to first project"
+        };
+        
+        for (Employee employee : employees) {
+            for (int i = 0; i < taskTitles.length; i++) {
+                OnboardingTask task = new OnboardingTask();
+                task.setEmployee(employee);
+                task.setTitle(taskTitles[i]);
+                task.setDescription(taskDescriptions[i]);
+                task.setCompleted(Math.random() > 0.3); // 70% completion rate
+                onboardingTaskRepository.save(task);
+            }
+        }
+    }
+    
+    private String generateFeedback(int score) {
+        if (score >= 90) {
+            return "Outstanding performance! Exceeds all expectations.";
+        } else if (score >= 80) {
+            return "Great work! Meets and exceeds most expectations.";
+        } else if (score >= 70) {
+            return "Good performance. Meets expectations with room for improvement.";
+        } else {
+            return "Needs improvement in several areas. Focus on development goals.";
+        }
     }
 } 

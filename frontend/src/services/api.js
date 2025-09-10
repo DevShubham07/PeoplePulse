@@ -193,6 +193,16 @@ export const attendanceAPI = {
     return handleResponse(response);
   },
 
+  getAttendanceByEmployee: async (employeeId) => {
+    const response = await fetch(`${API_BASE_URL}/attendance/employee/${employeeId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return handleResponse(response);
+  },
+
   deleteAttendance: async (id) => {
     const response = await fetch(`${API_BASE_URL}/attendance/${id}`, {
       method: 'DELETE',

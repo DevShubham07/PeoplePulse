@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
+import SystemStatus from '../components/SystemStatus';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { useNotification } from '../components/NotificationProvider';
 import { employeeAPI, attendanceAPI, performanceAPI } from '../services/api';
 import { 
   Clock, 
@@ -22,13 +25,17 @@ import {
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showSuccess, showError, showInfo } = useNotification();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isClockedIn, setIsClockedIn] = useState(false);
+  const [clockInTime, setClockInTime] = useState(null);
+  const [currentAttendanceId, setCurrentAttendanceId] = useState(null);
 
   const [employees, setEmployees] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [performance, setPerformance] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dbActivity, setDbActivity] = useState([]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -51,25 +58,67 @@ const Dashboard = () => {
         setEmployees(employeesData);
         setAttendance(attendanceData);
         setPerformance(performanceData);
+        
+        // Check if user is currently clocked in
+        const today = new Date().toISOString().split('T')[0];
+        const userAttendance = attendanceData.find(a => 
+          a.employee?.id === user?.employee?.id && 
+          a.date === today && 
+          a.clockIn && 
+          !a.clockOut
+        );
+        
+        if (userAttendance) {
+          setIsClockedIn(true);
+          setClockInTime(new Date(userAttendance.clockIn));
+          setCurrentAttendanceId(userAttendance.id);
+        }
+        
+        // Add database activity log
+        addDbActivity('Data fetched successfully', 'success');
+        showInfo('Dashboard data loaded successfully');
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         // Use mock data if API fails
         setEmployees([]);
         setAttendance([]);
         setPerformance([]);
+        addDbActivity('API connection failed - using mock data', 'warning');
+        showError('Failed to load dashboard data. Using offline mode.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchDashboardData();
-  }, []);
+  }, [user]);
+
+  // Add database activity logging function
+  const addDbActivity = (message, type = 'info') => {
+    const activity = {
+      id: Date.now(),
+      message,
+      type,
+      timestamp: new Date().toLocaleTimeString()
+    };
+    setDbActivity(prev => [activity, ...prev.slice(0, 9)]); // Keep last 10 activities
+  };
 
   const handleClockInOut = async () => {
     try {
       if (isClockedIn) {
         // Clock out
+        if (currentAttendanceId) {
+          const clockOutData = {
+            clockOut: new Date().toISOString()
+          };
+          await attendanceAPI.updateAttendance(currentAttendanceId, clockOutData);
+          addDbActivity('Clock out recorded in database', 'success');
+          showSuccess('Successfully clocked out!');
+        }
         setIsClockedIn(false);
+        setClockInTime(null);
+        setCurrentAttendanceId(null);
       } else {
         // Clock in
         const clockInData = {
@@ -78,11 +127,21 @@ const Dashboard = () => {
           date: new Date().toISOString().split('T')[0]
         };
         
-        await attendanceAPI.createAttendance(clockInData);
+        const response = await attendanceAPI.createAttendance(clockInData);
         setIsClockedIn(true);
+        setClockInTime(new Date());
+        setCurrentAttendanceId(response.id);
+        addDbActivity('Clock in recorded in database', 'success');
+        showSuccess('Successfully clocked in!');
+        
+        // Refresh attendance data
+        const updatedAttendance = await attendanceAPI.getAllAttendance();
+        setAttendance(updatedAttendance);
       }
     } catch (error) {
       console.error('Error clocking in/out:', error);
+      addDbActivity('Clock in/out failed - API error', 'error');
+      showError('Failed to update attendance. Please try again.');
       // Fallback to local state if API fails
       setIsClockedIn(!isClockedIn);
     }
@@ -167,10 +226,10 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-secondary-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-secondary-600">Loading dashboard...</p>
+      <div className="min-h-screen bg-secondary-50">
+        <Navigation />
+        <div className="lg:pl-64">
+          <LoadingSpinner fullScreen text="Loading dashboard..." />
         </div>
       </div>
     );
@@ -184,21 +243,26 @@ const Dashboard = () => {
       <div className="lg:pl-64">
         {/* Header */}
         <div className="bg-white border-b border-secondary-200 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold text-secondary-900">Dashboard</h1>
-              <p className="text-secondary-600">Welcome back, {user?.employee?.name || user?.username}</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-secondary-900">Dashboard</h1>
+              <p className="text-sm sm:text-base text-secondary-600">Welcome back, {user?.employee?.name || user?.username}</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm text-secondary-500">Current Time</p>
-                <p className="text-lg font-semibold text-secondary-900">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+              <div className="text-left sm:text-right">
+                <p className="text-xs sm:text-sm text-secondary-500">Current Time</p>
+                <p className="text-base sm:text-lg font-semibold text-secondary-900">
                   {currentTime.toLocaleTimeString()}
                 </p>
+                {isClockedIn && clockInTime && (
+                  <p className="text-xs text-green-600">
+                    Clocked in: {clockInTime.toLocaleTimeString()}
+                  </p>
+                )}
               </div>
               <button
                 onClick={handleClockInOut}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                   isClockedIn
                     ? 'bg-red-100 text-red-700 hover:bg-red-200'
                     : 'bg-green-100 text-green-700 hover:bg-green-200'
@@ -241,7 +305,7 @@ const Dashboard = () => {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
             <div className="card">
               <div className="flex items-center justify-between">
                 <div>
@@ -307,7 +371,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
             {/* Recent Activities */}
             <div className="card">
               <div className="flex items-center justify-between mb-6">
@@ -331,6 +395,42 @@ const Dashboard = () => {
                 })}
               </div>
             </div>
+
+            {/* Real-time Database Activity */}
+            <div className="card">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-secondary-900">Database Activity</h3>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-green-600 font-medium">Live</span>
+                </div>
+              </div>
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {dbActivity.length > 0 ? (
+                  dbActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-start space-x-3 p-2 bg-secondary-50 rounded-lg">
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        activity.type === 'success' ? 'bg-green-500' :
+                        activity.type === 'error' ? 'bg-red-500' :
+                        activity.type === 'warning' ? 'bg-yellow-500' :
+                        'bg-blue-500'
+                      }`}></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-secondary-900">{activity.message}</p>
+                        <p className="text-xs text-secondary-500">{activity.timestamp}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-secondary-500">No database activity yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* System Status */}
+            <SystemStatus />
 
             {/* Upcoming Events */}
             <div className="card">
@@ -361,7 +461,7 @@ const Dashboard = () => {
           {/* Quick Actions */}
           <div className="card mt-8">
             <h3 className="text-lg font-semibold text-secondary-900 mb-6">Quick Actions</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               <button 
                 onClick={() => navigate('/team')}
                 className="flex flex-col items-center p-4 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors duration-200"
@@ -396,7 +496,7 @@ const Dashboard = () => {
           {/* Download Section */}
           <div className="card mt-8">
             <h3 className="text-lg font-semibold text-secondary-900 mb-6">Downloads</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <button 
                 onClick={() => {
                   const data = {

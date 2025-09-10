@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Footer from '../components/Footer';
 import { 
   Users, 
   TrendingUp, 
@@ -219,49 +220,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-secondary-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Building2 className="w-6 h-6" />
-                <span className="text-xl font-bold">PeoplePulse</span>
-              </div>
-              <p className="text-secondary-400">
-                Modern employee management platform designed for the digital workplace.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-secondary-400">
-                <li><button className="hover:text-white transition-colors text-left">Features</button></li>
-                <li><button className="hover:text-white transition-colors text-left">Pricing</button></li>
-                <li><button className="hover:text-white transition-colors text-left">Security</button></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-secondary-400">
-                <li><button className="hover:text-white transition-colors text-left">About</button></li>
-                <li><button className="hover:text-white transition-colors text-left">Contact</button></li>
-                <li><button className="hover:text-white transition-colors text-left">Careers</button></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-secondary-400">
-                <li><button className="hover:text-white transition-colors text-left">Help Center</button></li>
-                <li><button className="hover:text-white transition-colors text-left">Documentation</button></li>
-                <li><button className="hover:text-white transition-colors text-left">Status</button></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-secondary-800 mt-8 pt-8 text-center text-secondary-400">
-            <p>&copy; 2024 PeoplePulse. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

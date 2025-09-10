@@ -44,6 +44,12 @@ public class AttendanceController {
         return service.saveAttendance(attendance);
     }
 
+    @PutMapping("/{id}")
+    public Attendance update(@PathVariable Long id, @RequestBody Attendance attendance) {
+        attendance.setId(id);
+        return service.saveAttendance(attendance);
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.deleteAttendance(id);

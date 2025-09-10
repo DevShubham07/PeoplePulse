@@ -8,10 +8,6 @@ import lombok.Builder;
 import java.util.List;
 import java.util.Map;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class DashboardStatsDTO {
     private Integer totalEmployees;
     private Integer activeEmployees;
@@ -27,6 +23,26 @@ public class DashboardStatsDTO {
     private List<TopPerformerDTO> topPerformers;
     private AttendanceSummaryDTO attendanceSummary;
     private PerformanceTrendDTO performanceTrend;
+    
+    // Constructors
+    public DashboardStatsDTO() {}
+    
+    public DashboardStatsDTO(Integer totalEmployees, Integer activeEmployees, Integer totalDepartments, Double averagePerformance, Double averageAttendance, Integer totalProjects, Integer completedProjects, Double projectCompletionRate, Map<String, Integer> departmentStats, Map<String, Integer> performanceDistribution, List<RecentActivityDTO> recentActivities, List<TopPerformerDTO> topPerformers, AttendanceSummaryDTO attendanceSummary, PerformanceTrendDTO performanceTrend) {
+        this.totalEmployees = totalEmployees;
+        this.activeEmployees = activeEmployees;
+        this.totalDepartments = totalDepartments;
+        this.averagePerformance = averagePerformance;
+        this.averageAttendance = averageAttendance;
+        this.totalProjects = totalProjects;
+        this.completedProjects = completedProjects;
+        this.projectCompletionRate = projectCompletionRate;
+        this.departmentStats = departmentStats;
+        this.performanceDistribution = performanceDistribution;
+        this.recentActivities = recentActivities;
+        this.topPerformers = topPerformers;
+        this.attendanceSummary = attendanceSummary;
+        this.performanceTrend = performanceTrend;
+    }
     
     public static DashboardStatsDTOBuilder builder() {
         return new DashboardStatsDTOBuilder();
@@ -67,8 +83,7 @@ public class DashboardStatsDTO {
             return new DashboardStatsDTO(totalEmployees, activeEmployees, totalDepartments, averagePerformance, averageAttendance, totalProjects, completedProjects, projectCompletionRate, departmentStats, performanceDistribution, recentActivities, topPerformers, attendanceSummary, performanceTrend);
         }
     }
-}
-
+    
     public static class RecentActivityDTO {
         private String type;
         private String description;
@@ -246,3 +261,4 @@ public class DashboardStatsDTO {
         public Double getTrendDirection() { return trendDirection; }
         public String getTrendDescription() { return trendDescription; }
     }
+}

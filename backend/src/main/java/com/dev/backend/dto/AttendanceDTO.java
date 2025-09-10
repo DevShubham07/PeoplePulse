@@ -9,10 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Duration;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class AttendanceDTO {
     private Long id;
     private Long employeeId;
@@ -30,6 +26,28 @@ public class AttendanceDTO {
     private Double overtimeHours;
     private Boolean isHoliday;
     private String holidayReason;
+    
+    // Constructors
+    public AttendanceDTO() {}
+    
+    public AttendanceDTO(Long id, Long employeeId, String employeeName, LocalDate date, LocalDateTime clockIn, LocalDateTime clockOut, Duration totalHours, String status, Boolean isLate, Boolean isOvertime, String notes, String location, String workMode, Double overtimeHours, Boolean isHoliday, String holidayReason) {
+        this.id = id;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.date = date;
+        this.clockIn = clockIn;
+        this.clockOut = clockOut;
+        this.totalHours = totalHours;
+        this.status = status;
+        this.isLate = isLate;
+        this.isOvertime = isOvertime;
+        this.notes = notes;
+        this.location = location;
+        this.workMode = workMode;
+        this.overtimeHours = overtimeHours;
+        this.isHoliday = isHoliday;
+        this.holidayReason = holidayReason;
+    }
     
     // Explicit getters to ensure compatibility
     public LocalDateTime getClockIn() {

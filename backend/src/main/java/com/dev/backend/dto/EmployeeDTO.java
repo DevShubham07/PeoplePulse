@@ -8,10 +8,6 @@ import lombok.Builder;
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class EmployeeDTO {
     private Long id;
     private String name;
@@ -35,6 +31,34 @@ public class EmployeeDTO {
     private Boolean isActive;
     private Integer totalProjects;
     private Integer completedProjects;
+    
+    // Constructors
+    public EmployeeDTO() {}
+    
+    public EmployeeDTO(Long id, String name, String designation, String department, LocalDate joinDate, String email, String phone, String status, Long managerId, String managerName, Double performanceScore, Integer attendanceRate, List<String> skills, String location, String employeeType, Double salary, String bio, String profileImageUrl, LocalDate lastLoginDate, Boolean isActive, Integer totalProjects, Integer completedProjects) {
+        this.id = id;
+        this.name = name;
+        this.designation = designation;
+        this.department = department;
+        this.joinDate = joinDate;
+        this.email = email;
+        this.phone = phone;
+        this.status = status;
+        this.managerId = managerId;
+        this.managerName = managerName;
+        this.performanceScore = performanceScore;
+        this.attendanceRate = attendanceRate;
+        this.skills = skills;
+        this.location = location;
+        this.employeeType = employeeType;
+        this.salary = salary;
+        this.bio = bio;
+        this.profileImageUrl = profileImageUrl;
+        this.lastLoginDate = lastLoginDate;
+        this.isActive = isActive;
+        this.totalProjects = totalProjects;
+        this.completedProjects = completedProjects;
+    }
     
     // Explicit getters to ensure compatibility
     public Long getId() {

@@ -29,48 +29,48 @@ public class DashboardStatsDTO {
     private PerformanceTrendDTO performanceTrend;
 }
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-class RecentActivityDTO {
-    private String type;
-    private String description;
-    private String timestamp;
-    private String employeeName;
-    private String icon;
-}
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class RecentActivityDTO {
+        private String type;
+        private String description;
+        private String timestamp;
+        private String employeeName;
+        private String icon;
+    }
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-class TopPerformerDTO {
-    private String employeeName;
-    private String department;
-    private Double performanceScore;
-    private String designation;
-}
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class TopPerformerDTO {
+        private String employeeName;
+        private String department;
+        private Double performanceScore;
+        private String designation;
+    }
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-class AttendanceSummaryDTO {
-    private Integer presentToday;
-    private Integer absentToday;
-    private Integer lateToday;
-    private Double averageAttendanceThisMonth;
-    private Integer totalWorkingDays;
-}
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class AttendanceSummaryDTO {
+        private Integer presentToday;
+        private Integer absentToday;
+        private Integer lateToday;
+        private Double averageAttendanceThisMonth;
+        private Integer totalWorkingDays;
+    }
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-class PerformanceTrendDTO {
-    private List<Double> monthlyScores;
-    private List<String> months;
-    private Double trendDirection; // positive or negative
-    private String trendDescription;
-}
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class PerformanceTrendDTO {
+        private List<Double> monthlyScores;
+        private List<String> months;
+        private Double trendDirection; // positive or negative
+        private String trendDescription;
+    }

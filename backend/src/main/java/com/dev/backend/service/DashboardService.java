@@ -84,16 +84,16 @@ public class DashboardService {
                 ));
         
         // Recent activities
-        List<RecentActivityDTO> recentActivities = generateRecentActivities();
+        List<DashboardStatsDTO.RecentActivityDTO> recentActivities = generateRecentActivities();
         
         // Top performers
-        List<TopPerformerDTO> topPerformers = allEmployees.stream()
+        List<DashboardStatsDTO.TopPerformerDTO> topPerformers = allEmployees.stream()
                 .sorted((a, b) -> Double.compare(
                     b.getPerformanceScore() != null ? b.getPerformanceScore() : 0.0,
                     a.getPerformanceScore() != null ? a.getPerformanceScore() : 0.0
                 ))
                 .limit(5)
-                .map(emp -> TopPerformerDTO.builder()
+                .map(emp -> DashboardStatsDTO.TopPerformerDTO.builder()
                     .employeeName(emp.getName())
                     .department(emp.getDepartment())
                     .performanceScore(emp.getPerformanceScore())
@@ -102,10 +102,10 @@ public class DashboardService {
                 .collect(Collectors.toList());
         
         // Attendance summary
-        AttendanceSummaryDTO attendanceSummary = calculateAttendanceSummary(todayAttendance);
+        DashboardStatsDTO.AttendanceSummaryDTO attendanceSummary = calculateAttendanceSummary(todayAttendance);
         
         // Performance trend
-        PerformanceTrendDTO performanceTrend = calculatePerformanceTrend();
+        DashboardStatsDTO.PerformanceTrendDTO performanceTrend = calculatePerformanceTrend();
         
         return DashboardStatsDTO.builder()
                 .totalEmployees(totalEmployees)
@@ -133,11 +133,11 @@ public class DashboardService {
         return "Needs Improvement";
     }
 
-    private List<RecentActivityDTO> generateRecentActivities() {
-        List<RecentActivityDTO> activities = new ArrayList<>();
+    private List<DashboardStatsDTO.RecentActivityDTO> generateRecentActivities() {
+        List<DashboardStatsDTO.RecentActivityDTO> activities = new ArrayList<>();
         
         // Add some mock recent activities
-        activities.add(RecentActivityDTO.builder()
+        activities.add(DashboardStatsDTO.RecentActivityDTO.builder()
                 .type("attendance")
                 .description("John Doe clocked in")
                 .timestamp("2 hours ago")
@@ -145,7 +145,7 @@ public class DashboardService {
                 .icon("clock")
                 .build());
         
-        activities.add(RecentActivityDTO.builder()
+        activities.add(DashboardStatsDTO.RecentActivityDTO.builder()
                 .type("performance")
                 .description("Performance review completed for Sarah Johnson")
                 .timestamp("1 day ago")
@@ -153,7 +153,7 @@ public class DashboardService {
                 .icon("trending-up")
                 .build());
         
-        activities.add(RecentActivityDTO.builder()
+        activities.add(DashboardStatsDTO.RecentActivityDTO.builder()
                 .type("employee")
                 .description("New employee Alex Smith joined Engineering team")
                 .timestamp("3 days ago")
@@ -161,7 +161,7 @@ public class DashboardService {
                 .icon("user-plus")
                 .build());
         
-        activities.add(RecentActivityDTO.builder()
+        activities.add(DashboardStatsDTO.RecentActivityDTO.builder()
                 .type("project")
                 .description("Project 'Mobile App Redesign' completed")
                 .timestamp("1 week ago")
@@ -172,7 +172,7 @@ public class DashboardService {
         return activities;
     }
 
-    private AttendanceSummaryDTO calculateAttendanceSummary(List<AttendanceDTO> todayAttendance) {
+    private DashboardStatsDTO.AttendanceSummaryDTO calculateAttendanceSummary(List<AttendanceDTO> todayAttendance) {
         int presentToday = (int) todayAttendance.stream()
                 .filter(att -> "PRESENT".equals(att.getStatus()) || "LATE".equals(att.getStatus()))
                 .count();
@@ -197,7 +197,7 @@ public class DashboardService {
         
         int totalWorkingDays = LocalDate.now().getDayOfMonth();
         
-        return AttendanceSummaryDTO.builder()
+        return DashboardStatsDTO.AttendanceSummaryDTO.builder()
                 .presentToday(presentToday)
                 .absentToday(absentToday)
                 .lateToday(lateToday)
@@ -206,7 +206,7 @@ public class DashboardService {
                 .build();
     }
 
-    private PerformanceTrendDTO calculatePerformanceTrend() {
+    private DashboardStatsDTO.PerformanceTrendDTO calculatePerformanceTrend() {
         // Mock performance trend data for the last 6 months
         List<Double> monthlyScores = Arrays.asList(8.2, 8.4, 8.6, 8.5, 8.7, 8.8);
         List<String> months = Arrays.asList("Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
@@ -214,7 +214,7 @@ public class DashboardService {
         double trendDirection = monthlyScores.get(monthlyScores.size() - 1) - monthlyScores.get(0);
         String trendDescription = trendDirection > 0 ? "Improving" : "Declining";
         
-        return PerformanceTrendDTO.builder()
+        return DashboardStatsDTO.PerformanceTrendDTO.builder()
                 .monthlyScores(monthlyScores)
                 .months(months)
                 .trendDirection(trendDirection)

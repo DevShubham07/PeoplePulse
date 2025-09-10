@@ -1,11 +1,11 @@
 package com.dev.backend.controller;
 
-import com.dev.backend.model.Employee;
+import com.dev.backend.dto.EmployeeDTO;
 import com.dev.backend.service.EmployeeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -19,27 +19,53 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAll() {
-        return employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeDTO>> getAll() {
+        return ResponseEntity.ok(employeeService.getAllEmployees());
     }
 
     @GetMapping("/{id}")
-    public Optional<Employee> getById(@PathVariable Long id) {
-        return employeeService.getEmployeeById(id);
+    public ResponseEntity<EmployeeDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
     @GetMapping("/manager/{managerId}")
-    public List<Employee> getByManager(@PathVariable Long managerId) {
-        return employeeService.getEmployeesByManagerId(managerId);
+    public ResponseEntity<List<EmployeeDTO>> getByManager(@PathVariable Long managerId) {
+        return ResponseEntity.ok(employeeService.getEmployeesByManager(managerId));
+    }
+
+    @GetMapping("/department/{department}")
+    public ResponseEntity<List<EmployeeDTO>> getByDepartment(@PathVariable String department) {
+        return ResponseEntity.ok(employeeService.getEmployeesByDepartment(department));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<EmployeeDTO>> getActiveEmployees() {
+        return ResponseEntity.ok(employeeService.getActiveEmployees());
+    }
+
+    @GetMapping("/low-performance/{threshold}")
+    public ResponseEntity<List<EmployeeDTO>> getLowPerformanceEmployees(@PathVariable Integer threshold) {
+        return ResponseEntity.ok(employeeService.getEmployeesWithLowPerformance(threshold));
+    }
+
+    @GetMapping("/tenure/{years}")
+    public ResponseEntity<List<EmployeeDTO>> getEmployeesByTenure(@PathVariable Integer years) {
+        return ResponseEntity.ok(employeeService.getEmployeesByTenure(years));
     }
 
     @PostMapping
-    public Employee create(@RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
+    public ResponseEntity<EmployeeDTO> create(@RequestBody EmployeeDTO employeeDTO) {
+        return ResponseEntity.ok(employeeService.createEmployee(employeeDTO));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EmployeeDTO> update(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
     }
 }

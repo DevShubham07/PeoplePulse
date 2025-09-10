@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-react';
 
 const Notification = ({ 
@@ -11,6 +11,13 @@ const Notification = ({
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
+  const handleClose = useCallback(() => {
+    setIsVisible(false);
+    setTimeout(() => {
+      onClose?.(id);
+    }, 300);
+  }, [onClose, id]);
+
   useEffect(() => {
     if (duration > 0) {
       const timer = setTimeout(() => {
@@ -19,14 +26,8 @@ const Notification = ({
 
       return () => clearTimeout(timer);
     }
-  }, [duration]);
+  }, [duration, handleClose]);
 
-  const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(() => {
-      onClose?.(id);
-    }, 300);
-  };
 
   const getIcon = () => {
     switch (type) {

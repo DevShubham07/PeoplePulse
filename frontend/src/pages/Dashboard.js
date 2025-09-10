@@ -91,7 +91,7 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [user]);
+  }, [user, showError, showInfo]);
 
   // Add database activity logging function
   const addDbActivity = (message, type = 'info') => {

@@ -5,7 +5,7 @@ import Navigation from '../components/Navigation';
 import SystemStatus from '../components/SystemStatus';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useNotification } from '../components/NotificationProvider';
-import { employeeAPI, attendanceAPI, performanceAPI } from '../services/api';
+import { employeeAPI, attendanceAPI } from '../services/api';
 import { 
   Clock, 
   TrendingUp, 
@@ -25,7 +25,7 @@ import {
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { showSuccess, showError, showInfo } = useNotification();
+  const { showError, showInfo } = useNotification();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isClockedIn, setIsClockedIn] = useState(false);
   const [clockInTime, setClockInTime] = useState(null);
@@ -49,15 +49,14 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const [employeesData, attendanceData, performanceData] = await Promise.all([
-          employeeAPI.getAllEmployees(),
-          attendanceAPI.getAllAttendance(),
-          performanceAPI.getAllPerformance()
+        const [employeesData, attendanceData] = await Promise.all([
+          employeeAPI.getAllEmployees().then(emps => emps.slice(0, 5)), // Limit to 5 employees
+          attendanceAPI.getAllAttendance().then(att => att.slice(0, 10)) // Limit to 10 attendance records
         ]);
         
         setEmployees(employeesData);
         setAttendance(attendanceData);
-        setPerformance(performanceData);
+        setPerformance([]); // Remove performance data to speed up loading
         
         // Check if user is currently clocked in
         const today = new Date().toISOString().split('T')[0];
@@ -75,16 +74,14 @@ const Dashboard = () => {
         }
         
         // Add database activity log
-        addDbActivity('Data fetched successfully', 'success');
-        showInfo('Dashboard data loaded successfully');
+        addDbActivity('Data loaded', 'success');
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
-        // Use mock data if API fails
+        // Use minimal mock data if API fails
         setEmployees([]);
         setAttendance([]);
         setPerformance([]);
-        addDbActivity('API connection failed - using mock data', 'warning');
-        showError('Failed to load dashboard data. Using offline mode.');
+        addDbActivity('Offline mode', 'warning');
       } finally {
         setLoading(false);
       }
@@ -93,15 +90,18 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [user, showError, showInfo]);
 
-  // Add database activity logging function
+  // Add database activity logging function (reduced frequency)
   const addDbActivity = (message, type = 'info') => {
-    const activity = {
-      id: Date.now(),
-      message,
-      type,
-      timestamp: new Date().toLocaleTimeString()
-    };
-    setDbActivity(prev => [activity, ...prev.slice(0, 9)]); // Keep last 10 activities
+    // Only log important activities to reduce noise
+    if (type === 'success' || type === 'error') {
+      const activity = {
+        id: Date.now(),
+        message,
+        type,
+        timestamp: new Date().toLocaleTimeString()
+      };
+      setDbActivity(prev => [activity, ...prev.slice(0, 5)]); // Keep last 5 activities only
+    }
   };
 
   const handleClockInOut = async () => {
@@ -113,8 +113,7 @@ const Dashboard = () => {
             clockOut: new Date().toISOString()
           };
           await attendanceAPI.updateAttendance(currentAttendanceId, clockOutData);
-          addDbActivity('Clock out recorded in database', 'success');
-          showSuccess('Successfully clocked out!');
+          addDbActivity('Clock out recorded', 'success');
         }
         setIsClockedIn(false);
         setClockInTime(null);
@@ -131,17 +130,15 @@ const Dashboard = () => {
         setIsClockedIn(true);
         setClockInTime(new Date());
         setCurrentAttendanceId(response.id);
-        addDbActivity('Clock in recorded in database', 'success');
-        showSuccess('Successfully clocked in!');
+        addDbActivity('Clock in recorded', 'success');
         
-        // Refresh attendance data
-        const updatedAttendance = await attendanceAPI.getAllAttendance();
+        // Refresh attendance data (limited)
+        const updatedAttendance = await attendanceAPI.getAllAttendance().then(att => att.slice(0, 10));
         setAttendance(updatedAttendance);
       }
     } catch (error) {
       console.error('Error clocking in/out:', error);
-      addDbActivity('Clock in/out failed - API error', 'error');
-      showError('Failed to update attendance. Please try again.');
+      addDbActivity('Clock in/out failed', 'error');
       // Fallback to local state if API fails
       setIsClockedIn(!isClockedIn);
     }

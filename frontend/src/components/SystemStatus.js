@@ -27,9 +27,9 @@ const SystemStatus = () => {
     const interval = setInterval(() => {
       setSystemStats(prev => ({
         ...prev,
-        activeUsers: Math.floor(Math.random() * 50) + 10,
-        totalRequests: prev.totalRequests + Math.floor(Math.random() * 5),
-        responseTime: Math.floor(Math.random() * 50) + 20
+        activeUsers: Math.floor(Math.random() * 20) + 5, // Reduced range
+        totalRequests: prev.totalRequests + Math.floor(Math.random() * 2), // Reduced increment
+        responseTime: Math.floor(Math.random() * 30) + 20 // Reduced range
       }));
 
       // Add random activity
@@ -52,7 +52,7 @@ const SystemStatus = () => {
       };
 
       setRecentActivity(prev => [newActivity, ...prev.slice(0, 7)]);
-    }, 3000);
+    }, 8000); // Reduced frequency from 3s to 8s
 
     return () => clearInterval(interval);
   }, []);

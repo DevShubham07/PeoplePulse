@@ -27,7 +27,7 @@ const SystemStatus = () => {
     const interval = setInterval(() => {
       setSystemStats(prev => ({
         ...prev,
-        activeUsers: Math.floor(Math.random() * 3) + 1, // Realistic range: 1-3 users
+        activeUsers: 1, // Always show 1 active user
         totalRequests: prev.totalRequests + Math.floor(Math.random() * 2), // Reduced increment
         responseTime: Math.floor(Math.random() * 30) + 20 // Reduced range
       }));
@@ -94,34 +94,34 @@ const SystemStatus = () => {
       </div>
 
       {/* System Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        <div className="text-center p-3 bg-secondary-50 rounded-lg">
-          <Database className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-          <p className="text-xs text-secondary-500">Database</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <div className="text-center p-2 bg-secondary-50 rounded-lg min-h-[80px] flex flex-col justify-center">
+          <Database className="w-4 h-4 text-blue-600 mx-auto mb-1" />
+          <p className="text-xs text-secondary-500 mb-1">Database</p>
           <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(systemStats.databaseStatus)}`}>
             {getStatusIcon(systemStats.databaseStatus)}
             <span className="ml-1">Connected</span>
           </div>
         </div>
 
-        <div className="text-center p-3 bg-secondary-50 rounded-lg">
-          <Server className="w-5 h-5 text-green-600 mx-auto mb-1" />
-          <p className="text-xs text-secondary-500">API Server</p>
+        <div className="text-center p-2 bg-secondary-50 rounded-lg min-h-[80px] flex flex-col justify-center">
+          <Server className="w-4 h-4 text-green-600 mx-auto mb-1" />
+          <p className="text-xs text-secondary-500 mb-1">API Server</p>
           <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(systemStats.apiStatus)}`}>
             {getStatusIcon(systemStats.apiStatus)}
             <span className="ml-1">Online</span>
           </div>
         </div>
 
-        <div className="text-center p-3 bg-secondary-50 rounded-lg">
-          <Users className="w-5 h-5 text-purple-600 mx-auto mb-1" />
-          <p className="text-xs text-secondary-500">Active Users</p>
+        <div className="text-center p-2 bg-secondary-50 rounded-lg min-h-[80px] flex flex-col justify-center">
+          <Users className="w-4 h-4 text-purple-600 mx-auto mb-1" />
+          <p className="text-xs text-secondary-500 mb-1">Active Users</p>
           <p className="text-lg font-semibold text-secondary-900">{systemStats.activeUsers}</p>
         </div>
 
-        <div className="text-center p-3 bg-secondary-50 rounded-lg">
-          <TrendingUp className="w-5 h-5 text-orange-600 mx-auto mb-1" />
-          <p className="text-xs text-secondary-500">Response Time</p>
+        <div className="text-center p-2 bg-secondary-50 rounded-lg min-h-[80px] flex flex-col justify-center">
+          <TrendingUp className="w-4 h-4 text-orange-600 mx-auto mb-1" />
+          <p className="text-xs text-secondary-500 mb-1">Response Time</p>
           <p className="text-lg font-semibold text-secondary-900">{systemStats.responseTime}ms</p>
         </div>
       </div>

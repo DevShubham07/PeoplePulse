@@ -60,8 +60,9 @@ const Dashboard = () => {
         
         // Check if user is currently clocked in
         const today = new Date().toISOString().split('T')[0];
+        const userEmployeeId = user?.employee?.id || user?.id || 1; // Fallback to user ID or 1
         const userAttendance = attendanceData.find(a => 
-          a.employee?.id === user?.employee?.id && 
+          a.employeeId === userEmployeeId && 
           a.date === today && 
           a.clockIn && 
           !a.clockOut
@@ -121,7 +122,7 @@ const Dashboard = () => {
       } else {
         // Clock in
         const clockInData = {
-          employee: { id: user?.employee?.id || 1 },
+          employeeId: user?.employee?.id || user?.id || 1,
           clockIn: new Date().toISOString(),
           date: new Date().toISOString().split('T')[0]
         };

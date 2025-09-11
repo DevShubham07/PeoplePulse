@@ -14,7 +14,7 @@ const SystemStatus = () => {
   const [systemStats, setSystemStats] = useState({
     databaseStatus: 'connected',
     apiStatus: 'online',
-    activeUsers: 0,
+    activeUsers: 1,
     totalRequests: 0,
     responseTime: 0,
     uptime: '99.9%'
@@ -27,7 +27,7 @@ const SystemStatus = () => {
     const interval = setInterval(() => {
       setSystemStats(prev => ({
         ...prev,
-        activeUsers: Math.floor(Math.random() * 20) + 5, // Reduced range
+        activeUsers: Math.floor(Math.random() * 3) + 1, // Realistic range: 1-3 users
         totalRequests: prev.totalRequests + Math.floor(Math.random() * 2), // Reduced increment
         responseTime: Math.floor(Math.random() * 30) + 20 // Reduced range
       }));
@@ -94,7 +94,7 @@ const SystemStatus = () => {
       </div>
 
       {/* System Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <div className="text-center p-3 bg-secondary-50 rounded-lg">
           <Database className="w-5 h-5 text-blue-600 mx-auto mb-1" />
           <p className="text-xs text-secondary-500">Database</p>

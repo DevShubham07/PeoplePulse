@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/PeoplePulse/static/css/main.421e3098.css",
-    "main.js": "/PeoplePulse/static/js/main.6f961acd.js",
+    "main.css": "/PeoplePulse/static/css/main.196c82b8.css",
+    "main.js": "/PeoplePulse/static/js/main.a9a8963e.js",
     "static/js/453.670e15c7.chunk.js": "/PeoplePulse/static/js/453.670e15c7.chunk.js",
     "index.html": "/PeoplePulse/index.html",
-    "main.421e3098.css.map": "/PeoplePulse/static/css/main.421e3098.css.map",
-    "main.6f961acd.js.map": "/PeoplePulse/static/js/main.6f961acd.js.map",
+    "main.196c82b8.css.map": "/PeoplePulse/static/css/main.196c82b8.css.map",
+    "main.a9a8963e.js.map": "/PeoplePulse/static/js/main.a9a8963e.js.map",
     "453.670e15c7.chunk.js.map": "/PeoplePulse/static/js/453.670e15c7.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.421e3098.css",
-    "static/js/main.6f961acd.js"
+    "static/css/main.196c82b8.css",
+    "static/js/main.a9a8963e.js"
   ]
 }

@@ -95,4 +95,13 @@ backend/application-*.properties
 
 # Backup files
 *.bak
-*.backup 
+*.backup
+
+# Development guides
+*_Development_Guide.md
+*_Guide.md
+Troubleshooting_Guide.md
+Database_Design_Guide.md
+Deployment_Guide.md
+GITHUB_DEPLOYMENT.md
+README_Development_Guide.md 
